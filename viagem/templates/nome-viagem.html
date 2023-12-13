@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <h1>Nome da Viagem</h1>
+</div>
+<div class=" container">
+  <form action="{% url 'nome-viagem' %}" method="post" autocomplete="off" class="row g-3"> 
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id" class="form-label">id da viagem</label>
+        <input class="form-control" id="id" name="id" readonly></input>
+        <label for="nome" class="form-label">Nome da viagem</label>
+        <input class="form-control" id="nome" name="nome" placeholder="Nome da viagem" required></input>  
+        <label for="datai" class="form-label">Data de inicio</label>
+        <input type="date" class="form-control" id="datai" name="datai" placeholder="Data de inicio" required></input>
+        <label for="dataf" class="form-label">Data do fim</label>
+        <input type="date" class="form-control" id="dataf" name="dataf" placeholder="Data do fim" required></input> 
+        
+        <input class="form-check-input" type="checkbox" value="1" id="atividade" name="atividade">
+        <label class="form-check-label" for="atividade">
+            Ativo
+        </label>
+             
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-primary" >Salvar Viagem</button>
+    </div>
+    <table class="table table-hover" id="minhaTabela">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome da Viagem</th>
+            <th scope="col">data de incio</th>
+            <th scope="col">data do fim</th>
+            <th scope="col">Situação</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in nomeviagem %}  
+          <tr>
+            <th scope="row">{{ item.id }}</th>
+            <td>{{ item.nome }}</td>
+            <td>{{ item.dataInicial }}</td>
+            <td>{{ item.DataFinal }}</td>
+            {% if item.atividade %}
+              <td>Ativo</td>
+            {% else %}
+            <td>
+              Inativo
+            </td>
+            {% endif %}
+          <td><button type="button"  class="btn btn-primary"  onclick="alterarNome('{{ item.id }}','{{ item.nome }}')">Alterar</button></td>
+          {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+  </form>
+</div>
+
+<script src="{% static 'js/alter.js' %}"></script> 
+{% endblock %}

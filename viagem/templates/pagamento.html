@@ -28,9 +28,9 @@
             {% for item in pagamento %}
           <tr>
             <th scope="row">{{ item.id }}</th>
-            <td>{{ item.forma_pagamento }}</td>
+            <td>{{ item.forma }}</td>
             <td><button type="button" class="btn btn-primary" 
-              onclick="alterPg('{{ item.id }}', '{{ item.forma_pagamento }}')">Alterar</button></td>
+              onclick="alterPg('{{ item.id }}', '{{ item.forma }}')">Alterar</button></td>
           </tr>
           {% endfor %}
         </tbody>

@@ -12,7 +12,14 @@ def dados(request):
     return render(request, 'dados.html')
 
 def carros(request):
-    return render(request, 'carro.html')
+    if request.method == 'POST':
+        res = Carros().salveCarros(request.POST)
+        messages.success(request, res)
+    context = {
+        'carro': Carros.objects.all()
+    }
+    return render(request, 'carro.html', context)
+    
 
 def cidades(request):
     if request.method == 'POST':
@@ -24,10 +31,28 @@ def cidades(request):
     return render(request, 'cidade.html', context)
 
 def nomeViagem(request):
-    return render(request, 'nome-viagem.html')
+    if request.method == 'POST':
+        res = NomeViagem().saveNomeViagem(request.POST)
+        messages.success(request, res)
+    context = {
+        'carro': Carros.objects.all()
+    }
+    return render(request, 'nome-viagem.html', context)
 
 def pagamentos(request):
-    return render(request, 'pagamento.html')
+    if request.method == 'POST':
+        res = Pagamentos().savePagamentos(request.POST)
+        messages.success(request, res)
+    context = {
+        'pagamento': Pagamentos.objects.all()
+    }
+    return render(request, 'pagamento.html', context)
 
 def tipos(request):
-    return render(request, 'tipo.html')
+    if request.method == 'POST':
+        res = Tipos().saveTipos(request)
+        messages.success(request, res)
+    context = {
+        'tipo': Tipos.objects.all()
+    }
+    return render(request, 'tipo.html', context)

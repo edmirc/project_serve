@@ -16,12 +16,24 @@
         <input type="date" class="form-control" id="datai" name="datai" placeholder="Data de inicio" required></input>
         <label for="dataf" class="form-label">Data do fim</label>
         <input type="date" class="form-control" id="dataf" name="dataf" placeholder="Data do fim" required></input> 
-        
-        <input class="form-check-input" type="checkbox" value="1" id="atividade" name="atividade">
-        <label class="form-check-label" for="atividade">
-            Ativo
-        </label>
-             
+        <labe for="carro" class="form-label">Carro utilizado</labe>
+        <select name="carro" id="carro" class="form-select">
+          <option selected></option>
+          {% for item in carro %}
+            <option value="{{ item.id }}">{{ item.placa }}</option>
+          {% endfor %}
+        </select>
+        <label for="user">Usuário</label>
+        <select name="user" id="user" class="form-select">
+          <option selected></option>
+          <option value="1">Edinho</option>
+        </select>
+    </div>
+    <div class="mb-3">
+      <input class="form-check-input" type="checkbox" value="1" id="atividade" name="atividade">
+      <label class="form-check-label" for="atividade">
+          Ativo
+      </label>
     </div>
     <div class="mb-3">
       <button type="submit" class="btn btn-outline-primary" >Salvar Viagem</button>

@@ -26,10 +26,6 @@ class Carros(models.Model):
         except:
             return 'Dados NÃO salvos!!!'
     
-    def __str__(self) -> str:
-        return self.placa
-
-
 class Cidades(models.Model):
     nome = models.CharField(name='nome', unique=True ,max_length=100)
     estado = models.CharField(name='estado', max_length=2)
@@ -75,7 +71,6 @@ class Pagamentos(models.Model):
         except:
             return 'Dados NÂO salvos!!'
 
-
 class Tipos(models.Model):
     tipo = models.CharField(name='tipo', max_length=50, unique=True)
 
@@ -97,55 +92,99 @@ class Tipos(models.Model):
         except:
              return 'Dados NÂO salvos!!'
 
-
 class Usuario(models.Model):
     nome = models.CharField(name='usuario', max_length=150)
     login = models.CharField(name= 'login', max_length=20)
     senha = models.CharField(name='senha', max_length=15)
     email = models.CharField(name='email', max_length=100)
 
+    def saveUsuarios(self, post: dict) -> str:
+        acao = 'salvo'
+        id = post['id']
+        nome = post['nome'].title().strip()
+        login = post['user'].strip().lower()
+        email = post['email'].strip().lower()
+        senha = post['senha']
+        print(nome)
+        print(post)
+        try:
+            if id == '':
+                self.usuario = nome
+                self.login = login
+                self.email = email
+                self.senha = senha
+                self.save()
+            else:
+                user = Usuario.objects.get(id=id)
+                user.usuario = nome
+                user.login = login
+                user.email = email
+                user.senha = senha
+                acao = 'alterado'
+                user.save()
+            return f'Usuário {login}, {acao} com sucesso!!'
+        except:
+            return 'Dados NÃO salvo!!!'
+    
+
+    def getUsers(self):
+        try:
+            return Usuario.objects.all()
+        except:
+            return list()
+        
 class NomeViagem(models.Model):
     nome = models.CharField(name='nome', max_length=100)
     datainicio = models.DateField(name='datainicio')
     datafinal = models.DateField(name='datafinal')
     carro = models.ForeignKey(Carros, on_delete=models.CASCADE, name='idcarro')
-    usuario = models.ForeignKey(Usuario, name='ususario', on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, name='usuario', on_delete=models.CASCADE)
     atividade = models.BooleanField(name='atividade')
 
     def saveNomeViagem(self, post: dict) -> str:
+        print(post)
         acao = 'salvo'
         id = post['id']
         nome = post['nome']
         nome = nome.strip().title()
         datainicio = post['datai']
         datafim = post['dataf']
-        car = Carros.objects.get(id=post['carro'])
-        usuario = Usuario.objects.get (id=post['user'])
-        atividade = post['atividade']
-        if atividade == '':
-            atividade = 0
+        car = post['carro']
+        car = Carros.objects.get(id=car)
+        print(car)
+        usuario = Usuario.objects.get(id=post['user'])
+        try:
+            atv = post['atv']
+        except KeyError:
+            atv = 0
         try:
             if id == '':
                 self.nome = nome
                 self.datainicio = datainicio
                 self.datafinal = datafim
-                self.carro = car
+                self.idcarro = car
                 self.usuario = usuario
-                self.atividade = atividade
+                self.atividade = atv
                 self.save()
             else:
                 nomev = NomeViagem.objects.get(id=id)
                 nomev.nome = nome
                 nomev.datainicio = datainicio
                 nomev.datafinal = datafim
-                nomev.carro = car
+                nomev.idcarro = car
                 nomev.usuario = usuario
-                nomev.atividade = atividade
+                nomev.atividade = atv
                 nomev.save()
                 acao = 'alterado'
             return f'Viagem {nome}, {acao} salvo com sucesso!!'
         except:
             return 'Dados NÂO salvos!!'
+        
+    def getNomeViagem(self):
+        try:
+            return NomeViagem.objects.all()
+        except:
+            return list()
 
 
 class Despesas(models.Model):

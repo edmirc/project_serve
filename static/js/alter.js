@@ -1,8 +1,10 @@
-function alterarNome(id, nome){
+function alterarNome(id, nome, datai){
 
       // Preencher os campos de input com os dados da linh
+
     document.getElementById('id').value = id;
     document.getElementById('nome').value = nome;
+    document.getElementById('datai').value =  datai;
       // Adicione mais campos de input conforme necessário
     };
 
@@ -43,5 +45,14 @@ function somaKm(){
 };
 
 
+function atividade(){
+    var labe = document.getElementById('ativi');
+    var inp = document.getElementById('atv');
+    if (inp.checked){
+        labe.textContent = 'Ativo';
 
+    }else{
+        labe.textContent = 'Inativo';
+    };
+};
 

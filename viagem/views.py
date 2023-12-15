@@ -35,7 +35,9 @@ def nomeViagem(request):
         res = NomeViagem().saveNomeViagem(request.POST)
         messages.success(request, res)
     context = {
-        'carro': Carros.objects.all()
+        'carro': Carros.objects.all(),
+        'user': Usuario().getUsers(),
+        'nomeviagem': NomeViagem().getNomeViagem()
     }
     return render(request, 'nome-viagem.html', context)
 
@@ -56,3 +58,13 @@ def tipos(request):
         'tipo': Tipos.objects.all()
     }
     return render(request, 'tipo.html', context)
+
+def usuarios(request):
+    if request.method == 'POST':
+        res = Usuario().saveUsuarios(request.POST)
+        messages.success(request, res)
+    context = {
+        'usuario': Usuario().getUsers()
+    }
+    print(context['usuario'])
+    return render(request, 'usuario.html', context)

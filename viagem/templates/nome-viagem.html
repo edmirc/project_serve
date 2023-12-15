@@ -26,13 +26,15 @@
         <label for="user">Usuário</label>
         <select name="user" id="user" class="form-select">
           <option selected></option>
-          <option value="1">Edinho</option>
+          {% for item in user %}
+            <option value="{{ item.id }}">{{ item.usuario}}</option>
+          {% endfor %}
         </select>
     </div>
     <div class="mb-3">
-      <input class="form-check-input" type="checkbox" value="1" id="atividade" name="atividade">
-      <label class="form-check-label" for="atividade">
-          Ativo
+      <input class="form-check-input" type="checkbox" value="1" id="atv" name="atv" onchange="atividade()">
+      <label class="form-check-label" for="atividade" id="ativi">
+          Desativado
       </label>
     </div>
     <div class="mb-3">
@@ -45,6 +47,8 @@
             <th scope="col">Nome da Viagem</th>
             <th scope="col">data de incio</th>
             <th scope="col">data do fim</th>
+            <th scope="col">Carro</th>
+            <th scope="col">Usuario</th>
             <th scope="col">Situação</th>
             <th scope="col">Ação</th>
           </tr>
@@ -54,8 +58,10 @@
           <tr>
             <th scope="row">{{ item.id }}</th>
             <td>{{ item.nome }}</td>
-            <td>{{ item.dataInicial }}</td>
-            <td>{{ item.DataFinal }}</td>
+            <td>{{ item.datainicio }}</td>
+            <td>{{ item.datafinal }}</td>
+            <td>{{ item.idcarro.placa }}</td>
+            <td>{{ item.usuario.usuario }}</td>
             {% if item.atividade %}
               <td>Ativo</td>
             {% else %}
@@ -63,7 +69,7 @@
               Inativo
             </td>
             {% endif %}
-          <td><button type="button"  class="btn btn-primary"  onclick="alterarNome('{{ item.id }}','{{ item.nome }}')">Alterar</button></td>
+          <td><button type="button"  class="btn btn-primary"  onclick="alterarNome('{{ item.id }}','{{ item.nome }}', '{{ item.datainicio }}')">Alterar</button></td>
           {% endfor %}
           </tr>
         </tbody>

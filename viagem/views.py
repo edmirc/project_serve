@@ -9,14 +9,24 @@ def index(request):
     return render(request, 'index.html')
 
 def dados(request):
-    return render(request, 'dados.html')
+    if request.method == 'POST':
+        res = Despesas().saveDespesa(request.POST)
+        messages.success(request, res)
+    context = {
+        'nomev': NomeViagem().getNomesAtivos(),
+        'tipos': Tipos().getTipos(),
+        'cidade': Cidades().getCidade(),
+        'pagamento': Pagamentos().getPagamentos(),
+        'despesas': Despesas().getDespesas()
+    }
+    return render(request, 'dados.html', context)
 
 def carros(request):
     if request.method == 'POST':
         res = Carros().salveCarros(request.POST)
         messages.success(request, res)
     context = {
-        'carro': Carros.objects.all()
+        'carro': Carros().getCarros()
     }
     return render(request, 'carro.html', context)
     
@@ -26,7 +36,7 @@ def cidades(request):
         res = Cidades().salveCidade(request.POST)
         messages.success(request, res)
     context = {
-        'cidade': Cidades.objects.all()
+        'cidade': Cidades().getCidade()
     }
     return render(request, 'cidade.html', context)
 
@@ -35,7 +45,7 @@ def nomeViagem(request):
         res = NomeViagem().saveNomeViagem(request.POST)
         messages.success(request, res)
     context = {
-        'carro': Carros.objects.all(),
+        'carro': Carros().getCarros(),
         'user': Usuario().getUsers(),
         'nomeviagem': NomeViagem().getNomeViagem()
     }
@@ -46,7 +56,7 @@ def pagamentos(request):
         res = Pagamentos().savePagamentos(request.POST)
         messages.success(request, res)
     context = {
-        'pagamento': Pagamentos.objects.all()
+        'pagamento': Pagamentos().getPagamentos()
     }
     return render(request, 'pagamento.html', context)
 
@@ -55,7 +65,7 @@ def tipos(request):
         res = Tipos().saveTipos(request)
         messages.success(request, res)
     context = {
-        'tipo': Tipos.objects.all()
+        'tipo': Tipos().getTipos()
     }
     return render(request, 'tipo.html', context)
 
@@ -66,5 +76,4 @@ def usuarios(request):
     context = {
         'usuario': Usuario().getUsers()
     }
-    print(context['usuario'])
     return render(request, 'usuario.html', context)

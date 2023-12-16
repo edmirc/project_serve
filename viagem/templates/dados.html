@@ -2,14 +2,14 @@
 {% block conteudo %}
 {% load static %}
 <div class="container">
-    <H1>Despesas da Vaigem</H1>
+    <H1>Despesas da Viagem</H1>
     <form action="{% url 'dados' %}" class="row g-3" method="post">
         {% csrf_token %}
         <div class="col-md-2">
             <label for="id" class="form-label">ID da Despesa</label>
             <input type="number" name="id" id="id" class="form-control" readonly>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <label for="nome-viagem" class="form-label">Selecione a viagem</label>
             <select name="nome-viagem" id="nome-viagem" class="form-select" required>
                 {% for item in nomev %}
@@ -19,17 +19,9 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-4">
             <label for="data" class="form-label">Data da Despesa</label>
             <input type="date" name="data" id="data" class="form-control" required>
-        </div>
-        <div class="col-md-4">
-            <label for="carro" class="form-label">Selecione o carro</label>
-            <select name="carro" id="carro" class="form-select">
-                {% for item in carro %}
-                <option value="{{ item.id }}">{{ item.placa }}</option>
-                {% endfor %}
-            </select>
         </div>
         <div class="col-md-4">
             <label for="tipo" class="form-label">Selecione a Despesa</label>
@@ -40,13 +32,17 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
             <label for="qnt" class="form-label">Quantidade</label>
             <input type="number" name="qnt" id="qnt"  step="0.010" class="form-control" >
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
             <label for="valor" class="form-label">Valor</label>
-            <input type="number" name="valor" id="valor" class="form-control" step="0.010">
+            <input type="number" name="valor" id="valor" class="form-control" step="0.010" required>
+        </div>
+        <div class="col-md-4">
+            <label for="nota" class="form-label">Número da nota</label>
+            <input type="number" name="nota" id="nota" class="form-control" required>
         </div>
         <div class="col-md-2">
             <label for="kmi" class="form-label">KM Inicial</label>
@@ -77,14 +73,14 @@
             <label for="pg" class="form-label">Forma de Pagamento</label>
             <select name="pg" id="pg" class="form-select">
                 {% for item in pagamento %}
-                <option value="{{ item.id }}">{{ item.forma_pagamento}}</option>
+                <option value="{{ item.id }}">{{ item.forma }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary">Slavar Despesa</button>
           </div>
-          <table class="table">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -104,9 +100,9 @@
                 {% for item in despesas %}
               <tr>
                 <th scope="row">{{ item.id }}</th>
-                <td>{{ item.idviagem.nome }}</td>
+                <td>{{ item.idnomeviagem.nome }}</td>
                 <td>{{item.data}}</td>
-                <td>{{ item.idTipo.tipo }}</td>
+                <td>{{ item.idtipo.tipo }}</td>
                 {% if item.qnt == 0 %}
                 <td></td>
                 {% else %}
@@ -122,7 +118,7 @@
                 <td>{{ item.consumo }}</td>
                 <td>{{ item.idcidade.nome }}</td>
                 {% endif %}
-                <td>{{ item.idpagamento.forma_pagamento }}</td>
+                <td>{{ item.idpagamento.forma }}</td>
                 <td><button type="button" class="btn btn-primary" 
                 onclick="alterDespesa('{{ item.id }}')">Alterar</button></td>
               </tr>

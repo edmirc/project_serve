@@ -31,6 +31,7 @@ function despesa(){
         kmr.value = '';
         consumo.value = '';
         qnt.value = '';
+        cidade.value = '';
         kmi.readOnly = false;
         kmf.readOnly = false;
         qnt.readOnly = false;
@@ -47,7 +48,7 @@ function despesa(){
         kmf.value = 0;
         kmr.value = 0;
         consumo.value = 0;
-        cidade.value = 22;
+        cidade.value = '1';
         kmi.readOnly = true;
         kmf.readOnly = true;
     };

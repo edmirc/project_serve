@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from django.db import models
 
 
@@ -13,18 +14,23 @@ class Carros(models.Model):
         plac = plac.upper()
         model = model.strip().title()
         try:
-            if id == '':
-                self.placa = plac
-                self.modelo = model
-                self.save()
-            else:
+            if id != '':
                 car = Carros.objects.get(id=id)
-                car.placa = plac
-                car.modelo = model
-                car.save()
+                acao = 'alterado'
+            else:
+                car = Carros()
+            car.placa = plac
+            car.modelo = model
+            car.save()
             return f'Carros {plac}, {acao} com sucesso !!'
         except:
             return 'Dados NÃO salvos!!!'
+    
+    def getCarros(self):
+        try:
+            return Carros.objects.all()
+        except:
+            return list()
     
 class Cidades(models.Model):
     nome = models.CharField(name='nome', unique=True ,max_length=100)
@@ -36,20 +42,25 @@ class Cidades(models.Model):
         nome: str = post['nome']
         estado: str = post['estado']
         nome = nome.title().strip()
-        estado = estado.title().strip()
+        estado = estado.upper().strip()
         try:
-            if id == '':
-                self.nome = nome
-                self.estado = estado
-                self.save()
-            else:
+            if id != '':
                 cid = Cidades.objects.get(id=id)
-                cid.nome = nome
-                cid.estado = estado
-                cid.save()
+                acao = 'alterado'
+            else:
+                cid = Cidades()
+            cid.nome = nome
+            cid.estado = estado
+            cid.save()
             return f'Cidade {nome}, {acao} com sucesso!!'
         except:
             return 'Dados NÃO salvos!!!'
+        
+    def getCidade(self):
+        try:
+            return Cidades.objects.all()
+        except:
+            return list()
 
 class Pagamentos(models.Model):
     forma = models.CharField(name='forma', unique=True, max_length=50)
@@ -60,16 +71,22 @@ class Pagamentos(models.Model):
         frm = post['tipo']
         frm = frm.strip().title()
         try:
-            if id == '':
-                self.forma = frm
-                self.save()
-            else:
+            if id != '':
                 pag = Pagamentos.objects.get(id=id)
-                pag.forma = frm
-                pag.save()
+                acao = 'alterado'
+            else:
+                pag = Pagamentos()
+            pag.forma = frm
+            pag.save()
             return f'Forma de pagamento {frm}, {acao} com sucesso!!!'
         except:
             return 'Dados NÂO salvos!!'
+    
+    def getPagamentos(self):
+        try:
+            return Pagamentos.objects.all().order_by('id')
+        except:
+            return list()
 
 class Tipos(models.Model):
     tipo = models.CharField(name='tipo', max_length=50, unique=True)
@@ -80,17 +97,23 @@ class Tipos(models.Model):
         tp = request.POST.get('tipo')
         tp = tp.strip().title()
         try:
-            if id == '':
-                self.tipo = tp
-                self.save()
-            else:
+            if id != '':
                 tipoid = Tipos.objects.get(id=id)
-                tipoid.tipo = tp
-                tipoid.save()
                 acao = 'alterado'
+            else:
+                tipoid = Tipos()
+            tipoid.tipo = tp
+            tipoid.save()
+                
             return f'Tipos de despesa {tp}, {acao} com sucesso!!'
         except:
              return 'Dados NÂO salvos!!'
+        
+    def getTipos(self):
+        try:
+            return Tipos.objects.all()
+        except:
+            return list()
 
 class Usuario(models.Model):
     nome = models.CharField(name='usuario', max_length=150)
@@ -105,23 +128,17 @@ class Usuario(models.Model):
         login = post['user'].strip().lower()
         email = post['email'].strip().lower()
         senha = post['senha']
-        print(nome)
-        print(post)
         try:
-            if id == '':
-                self.usuario = nome
-                self.login = login
-                self.email = email
-                self.senha = senha
-                self.save()
-            else:
+            if id != '':
                 user = Usuario.objects.get(id=id)
-                user.usuario = nome
-                user.login = login
-                user.email = email
-                user.senha = senha
                 acao = 'alterado'
-                user.save()
+            else:
+                user = Usuario()
+            user.usuario = nome
+            user.login = login
+            user.email = email
+            user.senha = senha
+            user.save()
             return f'Usuário {login}, {acao} com sucesso!!'
         except:
             return 'Dados NÃO salvo!!!'
@@ -142,7 +159,6 @@ class NomeViagem(models.Model):
     atividade = models.BooleanField(name='atividade')
 
     def saveNomeViagem(self, post: dict) -> str:
-        print(post)
         acao = 'salvo'
         id = post['id']
         nome = post['nome']
@@ -151,31 +167,24 @@ class NomeViagem(models.Model):
         datafim = post['dataf']
         car = post['carro']
         car = Carros.objects.get(id=car)
-        print(car)
         usuario = Usuario.objects.get(id=post['user'])
         try:
             atv = post['atv']
         except KeyError:
             atv = 0
         try:
-            if id == '':
-                self.nome = nome
-                self.datainicio = datainicio
-                self.datafinal = datafim
-                self.idcarro = car
-                self.usuario = usuario
-                self.atividade = atv
-                self.save()
-            else:
+            if id != '':
                 nomev = NomeViagem.objects.get(id=id)
-                nomev.nome = nome
-                nomev.datainicio = datainicio
-                nomev.datafinal = datafim
-                nomev.idcarro = car
-                nomev.usuario = usuario
-                nomev.atividade = atv
-                nomev.save()
                 acao = 'alterado'
+            else:
+                nomev = NomeViagem()
+            nomev.nome = nome
+            nomev.datainicio = datainicio
+            nomev.datafinal = datafim
+            nomev.idcarro = car
+            nomev.usuario = usuario
+            nomev.atividade = atv
+            nomev.save()
             return f'Viagem {nome}, {acao} salvo com sucesso!!'
         except:
             return 'Dados NÂO salvos!!'
@@ -183,6 +192,12 @@ class NomeViagem(models.Model):
     def getNomeViagem(self):
         try:
             return NomeViagem.objects.all()
+        except:
+            return list()
+        
+    def getNomesAtivos(self):
+        try:
+            return NomeViagem.objects.filter(atividade=True)
         except:
             return list()
 
@@ -193,7 +208,7 @@ class Despesas(models.Model):
     tipo = models.ForeignKey(Tipos, name='idtipo', on_delete=models.CASCADE)
     qnt = models.DecimalField(name='qnt',decimal_places=2, max_digits=10)
     valor = models.DecimalField(name='valor', decimal_places=2, max_digits=10)
-    nota = models.IntegerField(name='nota')
+    nota = models.IntegerField(name='nota', unique=True)
     kminicial = models.IntegerField(name='kminicial')
     kmfinal = models.IntegerField(name='kmfinal')
     kmrodado = models.IntegerField(name='kmrodado')
@@ -201,5 +216,46 @@ class Despesas(models.Model):
     cidade = models.ForeignKey(Cidades, name='idcidade', on_delete=models.CASCADE)
     pagamento = models.ForeignKey(Pagamentos, name='idpagamento', on_delete=models.CASCADE)
 
-
-
+    def saveDespesa(self, post: dict):
+        acao = 'salvo'
+        id  = post['id']
+        viagem = NomeViagem.objects.get(id=post['nome-viagem'])
+        data = post['data']
+        tipo = Tipos.objects.get(id=post['tipo'])
+        qnt = post['qnt']
+        valor = post['valor']
+        nota = post['nota']
+        kmi = post['kmi']
+        kmf = post['kmf']
+        kmr = post['kmr']
+        consumo = post['consumo']
+        cidade = Cidades.objects.get(id=post['cidade'])
+        pg = Pagamentos.objects.get(id=post['pg'])
+        try:
+            if id != '':
+                dados = Despesas.objects.get(id = id)
+                acao = 'Alterado'
+            else:
+                dados = Despesas()
+            dados.idnomeviagem = viagem
+            dados.data = data
+            dados.idtipo = tipo
+            dados.qnt = qnt
+            dados.valor = valor
+            dados.nota = nota
+            dados.kminicial = kmi
+            dados.kmfinal = kmf
+            dados.kmrodado = kmr
+            dados.media = consumo
+            dados.idcidade = cidade
+            dados.idpagamento = pg
+            dados.save()
+            return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
+        except:
+            return 'Dados NÂO salvos!!!'
+    
+    def getDespesas(self):
+        try:
+            return Despesas.objects.all()
+        except:
+            return list()

@@ -1,10 +1,17 @@
-function alterarNome(id, nome, datai){
+function alterarNome(id, nome, carro, user, datai, dataf){
 
       // Preencher os campos de input com os dados da linh
+    var partesi = datai.split("/");
+    var partesf = dataf.split("/");
+    var novaDatai = partesi[2] + "-" + partesi[1] + "-" + partesi[0];
+    var novaDataf = partesf[2] + "-" + partesf[1] + "-" + partesf[0];
 
     document.getElementById('id').value = id;
     document.getElementById('nome').value = nome;
-    document.getElementById('datai').value =  datai;
+    document.getElementById('carro').value =  carro;
+    document.getElementById('user').value =  user;
+    document.getElementById('datai').value =  novaDatai;
+    document.getElementById('dataf').value = novaDataf;
       // Adicione mais campos de input conforme necessário
     };
 
@@ -38,13 +45,6 @@ function alterPg(id, tipo){
 };
 
 
-function somaKm(){
-    var kmi = document.getElementById('kmi');
-    var kmf = document.getElementById('kmf');
-    document.getElementById('kmr'). value = parseInt(kmf.value) - parseInt(kmi.value);
-};
-
-
 function atividade(){
     var labe = document.getElementById('ativi');
     var inp = document.getElementById('atv');
@@ -54,5 +54,12 @@ function atividade(){
     }else{
         labe.textContent = 'Inativo';
     };
+};
+
+function alterUser(id, nome, user, email){
+    document.getElementById('id').value = id
+    document.getElementById('nome').value = nome;
+    document.getElementById('user').value = user;
+    document.getElementById('email').value = email;
 };
 

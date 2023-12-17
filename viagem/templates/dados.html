@@ -12,11 +12,7 @@
         <div class="col-md-6">
             <label for="nome-viagem" class="form-label">Selecione a viagem</label>
             <select name="nome-viagem" id="nome-viagem" class="form-select" required>
-                {% for item in nomev %}
-                {% if item.atividade %}
-                <option value="{{ item.id }}">{{ item.nome}}</option>
-                {% endif %}
-                {% endfor %}
+                <option value="{{ nomev.0 }}">{{ nomev.1}}</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -25,7 +21,7 @@
         </div>
         <div class="col-md-4">
             <label for="tipo" class="form-label">Selecione a Despesa</label>
-            <select name="tipo" id="tipo" class="form-select" required onchange="despesa()">
+            <select name="tipo" id="tipo" class="form-select" required onchange="despesa('{{ km }}')">
                 <option selected></option>
                 {% for item in tipos %}
                 <option value="{{ item.id }}">{{ item.tipo}}</option>
@@ -78,7 +74,8 @@
             </select>
         </div>
         <div class="col-12">
-            <button type="submit" class="btn btn-outline-primary">Slavar Despesa</button>
+            <button type="submit" class="btn btn-outline-primary" name="bt" value="1" >Salvar Despesa</button>
+            <button type="submit" class="btn btn-outline-danger" name="bt" value="2" id="bt-del" disabled>Deletar Despesa</button>
           </div>
           <table class="table table-hover">
             <thead>
@@ -109,18 +106,21 @@
                 <td>{{ item.qnt }}</td>
                 {% endif %}
                 <td>{{ item.valor }}</td>
-                {% if item.idTipo.id != 5 %}
+                {% if item.idtipo.id != 5 %}
                 <td></td>
                 <td></td>
                 <td></td>
                 {% else %}
                 <td>{{ item.kmrodado }}</td>
-                <td>{{ item.consumo }}</td>
+                <td>{{ item.media }}</td>
                 <td>{{ item.idcidade.nome }}</td>
                 {% endif %}
                 <td>{{ item.idpagamento.forma }}</td>
                 <td><button type="button" class="btn btn-primary" 
-                onclick="alterDespesa('{{ item.id }}')">Alterar</button></td>
+                onclick="alterDespesa('{{ item.id }}', '{{ item.idnomeviagem.id }}', 
+                '{{ item.idtipo.id }}', '{{ item.data }}', '{{ item.qnt }}', '{{ item.valor }}', 
+                '{{ item.nota }}', '{{ item.kminicial }}', '{{ item.kmfinal }}', 
+                '{{ item.kmrodado }}', '{{ item.media }}', '{{ item.idcidade.id }}', '{{ item.idpagamento.id }}')">Alterar</button></td>
               </tr>
               {% endfor %}
             </tbody>

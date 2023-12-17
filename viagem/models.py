@@ -155,6 +155,8 @@ class NomeViagem(models.Model):
     datainicio = models.DateField(name='datainicio')
     datafinal = models.DateField(name='datafinal')
     carro = models.ForeignKey(Carros, on_delete=models.CASCADE, name='idcarro')
+    kminicial = models.IntegerField(name='kminicial', default=0)
+    kmfinal = models.IntegerField(name='kmfinal', default=0)
     usuario = models.ForeignKey(Usuario, name='usuario', on_delete=models.CASCADE)
     atividade = models.BooleanField(name='atividade')
 
@@ -167,6 +169,8 @@ class NomeViagem(models.Model):
         datafim = post['dataf']
         car = post['carro']
         car = Carros.objects.get(id=car)
+        kmi = post['kmvi']
+        kmf = post['kmvf']
         usuario = Usuario.objects.get(id=post['user'])
         try:
             atv = post['atv']
@@ -182,6 +186,8 @@ class NomeViagem(models.Model):
             nomev.datainicio = datainicio
             nomev.datafinal = datafim
             nomev.idcarro = car
+            nomev.kminicial = kmi
+            nomev.kmfinal = kmf
             nomev.usuario = usuario
             nomev.atividade = atv
             nomev.save()
@@ -200,7 +206,20 @@ class NomeViagem(models.Model):
             return NomeViagem.objects.filter(atividade=True)
         except:
             return list()
-
+    
+    def countAtividade(self) -> dict:
+        atv = self.getNomeViagem()
+        if atv == []:
+            return 'Sem Viagens ativas!!!'
+        else:
+            res = atv.filter(atividade=True)
+            res1 = res.count()
+            if res1  == 0:
+                return {'n': 'Não possue viagem ativa, cadastre uma viagem para iniciar!!!'}
+            elif res1 > 1:
+                return {'n': 'Muitas viagens ativas, desative viagens para continuar!!!'}
+            else:    
+                return {'1': [str(res[0].id), res[0].nome]}
 
 class Despesas(models.Model):
     nomeviagem = models.ForeignKey(NomeViagem, name='idnomeviagem', on_delete=models.CASCADE)
@@ -217,45 +236,71 @@ class Despesas(models.Model):
     pagamento = models.ForeignKey(Pagamentos, name='idpagamento', on_delete=models.CASCADE)
 
     def saveDespesa(self, post: dict):
-        acao = 'salvo'
+        bt = post['bt']
         id  = post['id']
-        viagem = NomeViagem.objects.get(id=post['nome-viagem'])
-        data = post['data']
-        tipo = Tipos.objects.get(id=post['tipo'])
-        qnt = post['qnt']
-        valor = post['valor']
-        nota = post['nota']
-        kmi = post['kmi']
-        kmf = post['kmf']
-        kmr = post['kmr']
-        consumo = post['consumo']
-        cidade = Cidades.objects.get(id=post['cidade'])
-        pg = Pagamentos.objects.get(id=post['pg'])
-        try:
-            if id != '':
-                dados = Despesas.objects.get(id = id)
-                acao = 'Alterado'
-            else:
-                dados = Despesas()
-            dados.idnomeviagem = viagem
-            dados.data = data
-            dados.idtipo = tipo
-            dados.qnt = qnt
-            dados.valor = valor
-            dados.nota = nota
-            dados.kminicial = kmi
-            dados.kmfinal = kmf
-            dados.kmrodado = kmr
-            dados.media = consumo
-            dados.idcidade = cidade
-            dados.idpagamento = pg
-            dados.save()
-            return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
-        except:
-            return 'Dados NÂO salvos!!!'
+        if str(bt) == '1':
+            acao = 'salvo'
+            viagem = NomeViagem.objects.get(id=post['nome-viagem'])
+            data = post['data']
+            tipo = Tipos.objects.get(id=post['tipo'])
+            qnt = post['qnt']
+            valor = post['valor']
+            nota = post['nota']
+            kmi = post['kmi']
+            kmf = post['kmf']
+            kmr = post['kmr']
+            consumo = post['consumo']
+            cidade = Cidades.objects.get(id=post['cidade'])
+            pg = Pagamentos.objects.get(id=post['pg'])
+            try:
+                if id != '':
+                    dados = Despesas.objects.get(id = id)
+                    acao = 'Alterado'
+                else:
+                    dados = Despesas()
+                dados.idnomeviagem = viagem
+                dados.data = data
+                dados.idtipo = tipo
+                dados.qnt = qnt
+                dados.valor = valor
+                dados.nota = nota
+                dados.kminicial = kmi
+                dados.kmfinal = kmf
+                dados.kmrodado = kmr
+                dados.media = consumo
+                dados.idcidade = cidade
+                dados.idpagamento = pg
+                dados.save()
+                return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
+            except:
+                return 'Dados NÂO salvos!!!'
+        else:
+            return self.dropDespesa(id)
     
     def getDespesas(self):
         try:
-            return Despesas.objects.all()
+            viagem = NomeViagem().getNomesAtivos()
+            return Despesas.objects.all().filter(idnomeviagem=viagem[0].id).order_by('data', 'idtipo')
         except:
             return list()
+
+    def dropDespesa(self, id):
+        try:
+            desp = Despesas.objects.get(id=id)
+            desp.delete()
+            return f'Despesa de ID = {id}, deletado com sucesso!!!'
+        except:
+            return 'Despesa NÂO deletad!!'
+    
+    def lastKm(self):
+        viagem = NomeViagem().getNomesAtivos()
+        vg = viagem[0].id
+        dados = self.getDespesas()
+        dados = dados.filter(idnomeviagem=vg, idtipo=5)
+        dados = dados.last()
+        try: 
+            return dados.kmfinal
+        except:
+            vg = viagem[0].kminicial
+            return vg
+        

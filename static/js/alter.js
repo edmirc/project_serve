@@ -1,4 +1,4 @@
-function alterarNome(id, nome, carro, user, datai, dataf){
+function alterarNome(id, nome, carro, kmi, kmf,user, datai, dataf){
 
       // Preencher os campos de input com os dados da linh
     var partesi = datai.split("/");
@@ -9,6 +9,8 @@ function alterarNome(id, nome, carro, user, datai, dataf){
     document.getElementById('id').value = id;
     document.getElementById('nome').value = nome;
     document.getElementById('carro').value =  carro;
+    document.getElementById('kmvi').value =  kmi;
+    document.getElementById('kmvf').value =  kmf;
     document.getElementById('user').value =  user;
     document.getElementById('datai').value =  novaDatai;
     document.getElementById('dataf').value = novaDataf;

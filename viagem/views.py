@@ -9,16 +9,23 @@ def index(request):
     return render(request, 'index.html')
 
 def dados(request):
-    if request.method == 'POST':
-        res = Despesas().saveDespesa(request.POST)
-        messages.success(request, res)
-    context = {
-        'nomev': NomeViagem().getNomesAtivos(),
-        'tipos': Tipos().getTipos(),
-        'cidade': Cidades().getCidade(),
-        'pagamento': Pagamentos().getPagamentos(),
-        'despesas': Despesas().getDespesas()
-    }
+    resget = NomeViagem().countAtividade()
+    if '1' not in resget.keys():
+        messages.success(request, resget['n'])
+        context = {}
+    else:
+        if request.method == 'POST':
+            res = Despesas().saveDespesa(request.POST)
+            messages.success(request, res)
+        kmfinal = Despesas().lastKm()
+        context = {
+            'nomev': resget['1'],
+            'tipos': Tipos().getTipos(),
+            'cidade': Cidades().getCidade(),
+            'pagamento': Pagamentos().getPagamentos(),
+            'despesas': Despesas().getDespesas(),
+            'km': kmfinal
+        }
     return render(request, 'dados.html', context)
 
 def carros(request):
@@ -77,3 +84,7 @@ def usuarios(request):
         'usuario': Usuario().getUsers()
     }
     return render(request, 'usuario.html', context)
+
+def relatorios(request):
+
+    return render(request, 'relatorio.html')

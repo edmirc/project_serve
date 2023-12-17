@@ -16,8 +16,11 @@ function somarkm(){
     
 };
 
+function voltarAoTopo() {
+    window.scrollBy(0, -window.innerHeight);
+};
 
-function despesa(){
+function despesa(km){
     var despesa = document.getElementById('tipo');
     var kmi = document.getElementById('kmi');
     var kmf = document.getElementById('kmf');
@@ -26,7 +29,7 @@ function despesa(){
     var cidade = document.getElementById('cidade');
     var qnt = document.getElementById('qnt');
     if (despesa.value == '5'){
-        kmi.value = '';
+        kmi.value = km;
         kmf.value = '';
         kmr.value = '';
         consumo.value = '';
@@ -53,3 +56,25 @@ function despesa(){
         kmf.readOnly = true;
     };
 };
+
+function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, media, cid, pag){
+    var data1 = data.split("/");
+    var res  = data1[2] + '-' + data1[1] + '-' + data1[0];
+    document.getElementById('id').value = id;
+    document.getElementById('nome-viagem').value = viagem;
+    document.getElementById('tipo').value = tipo;
+    document.getElementById('data').value = res;
+    document.getElementById('qnt').value = parseFloat(qnt);
+    document.getElementById('valor').value = parseFloat(valor);
+    document.getElementById('nota').value = nota;
+    document.getElementById('kmi').value = kmi;
+    document.getElementById('kmf').value = kmf;
+    document.getElementById('kmr').value = kmr;
+    document.getElementById('consumo').value = parseFloat(media);
+    document.getElementById('cidade').value = cid;
+    document.getElementById('pg').value = pag;
+    document.getElementById('bt-del').disabled = false;
+    voltarAoTopo();
+};
+
+

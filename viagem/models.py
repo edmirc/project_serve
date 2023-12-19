@@ -111,7 +111,7 @@ class Tipos(models.Model):
         
     def getTipos(self):
         try:
-            return Tipos.objects.all()
+            return Tipos.objects.all().order_by('id')
         except:
             return list()
 
@@ -303,4 +303,11 @@ class Despesas(models.Model):
         except:
             vg = viagem[0].kminicial
             return vg
+    
+    def relDespesas(self, id: int, tipo: int = 0):
+        despesas = Despesas.objects.filter(idnomeviagem=id)
+        if tipo == 0:
+            return despesas
+        despesas = despesas.filter(idtipo = tipo)
+        return despesas
         

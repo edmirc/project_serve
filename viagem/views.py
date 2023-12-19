@@ -86,5 +86,19 @@ def usuarios(request):
     return render(request, 'usuario.html', context)
 
 def relatorios(request):
+    if request.method == 'POST':
+        id = request.POST.get('nomev')
+        tipo = request.POST.get('tipo')
+        if id != '' and tipo is None:
+            despesa = Despesas().relDespesas(id)
+        else:
+            despesa = Despesas().relDespesas(id, tipo)
 
-    return render(request, 'relatorio.html')
+    else:
+        despesa = list()
+    context = {
+        'nomeRel': NomeViagem().getNomeViagem(),
+        'tipo': Tipos().getTipos(),
+        'despesa': despesa
+    }
+    return render(request, 'relatorio.html', context)

@@ -14,21 +14,35 @@
               {% endfor %}
             </select>
         </div>
-        <h3>Filtros</h3>
+        <div class="col-md-4">
+            <label for="data" class="form-label">Selecione a data</label>
+            <input type="date" name="data" id="data" class="form-control" value="0">
+        </div>
+        <h5>Tipos de Depesas</h5>
         {% for i in tipo %}
-        <div class="col-md-2">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="tipo" id="flexRadioDefault" value="{{ i.id }}">
-                <label class="form-check-label" for="tipo">
-                  {{ i.tipo }}
-                </label>
-              </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="tipo" value="{{ i.id }}" id="firstRadio" >
+                <label class="form-check-label" for="tipo">{{ i.tipo }}</label>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+        <h5>Tipos de Pagamentos</h5>
+        {% for pg in pagamento %}
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="pagamento" value="{{ pg.id }}" id="firstRadio" >
+                <label class="form-check-label" for="pagamento">{{ pg.forma }}</label>
+                </li>
+            </ul>
         </div>
         {% endfor %}
         <div class="mb-3">
             <button type="submit" class="btn btn-outline-primary" >Enviar</button>
         </div>
-    
         <h5>Dados</h5>   
         <table class="table table-hover" id="minhaTabela">
             <thead>
@@ -47,6 +61,7 @@
             </tr>
             </thead>
             <tbody>
+                
                 {% for item in despesa %}
                 <tr>
                     <th scope="row">{{item.id}}</th>
@@ -73,6 +88,20 @@
                     <th>{{ item.idpagamento.forma }}</th>
                 </tr>
                 {% endfor %}
+                <tr>
+                    <th scope="row"></th>
+                    <th></th>
+                    <th>Total de despesas</th>
+                    <th></th>
+                    <th>{{ total }}</th>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <th></th>
+                    <th>Total de Adiantamento</th>
+                    <th></th>
+                    <th>{{ adiantamento }}</th>
+                </tr>
             </tbody>
     </form>       
 </div>

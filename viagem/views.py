@@ -87,18 +87,15 @@ def usuarios(request):
 
 def relatorios(request):
     if request.method == 'POST':
-        id = request.POST.get('nomev')
-        tipo = request.POST.get('tipo')
-        if id != '' and tipo is None:
-            despesa = Despesas().relDespesas(id)
-        else:
-            despesa = Despesas().relDespesas(id, tipo)
-
+        despesa = Despesas().relDespesas(request)
     else:
-        despesa = list()
+        despesa = ['','', '']
     context = {
         'nomeRel': NomeViagem().getNomeViagem(),
         'tipo': Tipos().getTipos(),
-        'despesa': despesa
+        'despesa': despesa[0],
+        'pagamento': Pagamentos().getPagamentos(),
+        'total': despesa[1],
+        'adiantamento': despesa[2]
     }
     return render(request, 'relatorio.html', context)

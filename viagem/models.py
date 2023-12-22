@@ -43,6 +43,9 @@ class Cidades(models.Model):
         estado: str = post['estado']
         nome = nome.title().strip()
         estado = estado.upper().strip()
+        testName = self.confirmCidade(nome)
+        if testName > 0:
+            return f'Cidade {nome}, já cadastrada!!'
         try:
             if id != '':
                 cid = Cidades.objects.get(id=id)
@@ -55,6 +58,14 @@ class Cidades(models.Model):
             return f'Cidade {nome}, {acao} com sucesso!!'
         except:
             return 'Dados NÃO salvos!!!'
+    
+    def confirmCidade(self, nome) -> int:
+        cid = Cidades.objects.filter(nome = nome)
+        id = cid[0].id
+        if id == '' or id is None:
+            return 0
+        else:
+            return id
         
     def getCidade(self):
         try:
@@ -297,17 +308,38 @@ class Despesas(models.Model):
         vg = viagem[0].id
         dados = self.getDespesas()
         dados = dados.filter(idnomeviagem=vg, idtipo=5)
-        dados = dados.last()
+        dados = dados.aggregate(max_km=models.Max('kmfinal'))
         try: 
-            return dados.kmfinal
+            return dados['max_km']
         except:
             vg = viagem[0].kminicial
             return vg
     
-    def relDespesas(self, id: int, tipo: int = 0):
-        despesas = Despesas.objects.filter(idnomeviagem=id)
-        if tipo == 0:
-            return despesas
-        despesas = despesas.filter(idtipo = tipo)
-        return despesas
-        
+    def relDespesas(self, request) -> list:
+        id = request.POST.get('nomev')
+        data = request.POST.get('data')
+        tipo = request.POST.get('tipo')
+        pg = request.POST.get('pagamento')
+    
+        despesas = Despesas.objects.filter(idnomeviagem=id).order_by('data', 'idtipo')
+        if tipo is None and data == '' and pg is not None:
+            despesas = despesas.filter(idpagamento = pg)
+        elif data != '' and tipo is None and pg is None:
+            despesas = despesas.filter(data = data)
+        elif data == '' and tipo is not None and pg is None:
+            despesas = despesas.filter(idtipo = tipo)
+        elif data != '' and tipo is not None and pg is None:
+            despesas = despesas.filter(idtipo = tipo, data = data)
+        elif data != "" and tipo is None and pg is not None:
+            despesas = despesas.filter(data = data, idpagamento=pg)
+        elif data != "" and tipo is not None and pg is not None:
+            despesas = despesas.filter(data = data, idtipo = tipo, idpagamento=pg)
+        elif data == "" and tipo is not None and pg is not None:
+            despesas = despesas.filter(idtipo = tipo, idpagamento=pg)
+        totalv = despesas.aggregate(total=models.Sum('valor'))
+        adiantamento = despesas.filter(idtipo = 7)
+        adiantamento = adiantamento.aggregate(adian = models.Sum('valor'))
+        total = float(totalv['total']) - float(adiantamento['adian']) 
+        print(float(totalv['total'])) 
+        print(float(adiantamento['adian']))                                
+        return [despesas, total, adiantamento['adian']]

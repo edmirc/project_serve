@@ -339,7 +339,11 @@ class Despesas(models.Model):
         totalv = despesas.aggregate(total=models.Sum('valor'))
         adiantamento = despesas.filter(idtipo = 7)
         adiantamento = adiantamento.aggregate(adian = models.Sum('valor'))
-        total = float(totalv['total']) - float(adiantamento['adian']) 
-        print(float(totalv['total'])) 
-        print(float(adiantamento['adian']))                                
-        return [despesas, total, adiantamento['adian']]
+        try:
+            adiantamento = adiantamento['adian']
+            total = float(totalv['total']) - float(adiantamento)
+        except:
+            total = totalv['total']
+            adiantamento = 0
+
+        return [despesas, round(total,2), adiantamento]

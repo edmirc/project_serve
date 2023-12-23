@@ -231,6 +231,11 @@ class NomeViagem(models.Model):
                 return {'n': 'Muitas viagens ativas, desative viagens para continuar!!!'}
             else:    
                 return {'1': [str(res[0].id), res[0].nome]}
+    
+    def alterKmFinal(id: int, kmfinal: int):
+        viagem = NomeViagem.objects.get(id = id)
+        viagem.kmfinal = kmfinal
+        viagem.save()
 
 class Despesas(models.Model):
     nomeviagem = models.ForeignKey(NomeViagem, name='idnomeviagem', on_delete=models.CASCADE)
@@ -282,9 +287,14 @@ class Despesas(models.Model):
                 dados.idcidade = cidade
                 dados.idpagamento = pg
                 dados.save()
+                if int(kmf) > 0 and id == "": 
+                    viagem.kmfinal = kmf
+                    viagem.save()
                 return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
             except:
                 return 'Dados NÂO salvos!!!'
+        elif str(bt) == '3':
+            return 'Formulario limpo!!'
         else:
             return self.dropDespesa(id)
     
@@ -342,8 +352,13 @@ class Despesas(models.Model):
         try:
             adiantamento = adiantamento['adian']
             total = float(totalv['total']) - float(adiantamento)
-        except:
+            return [despesas, round(total,2), adiantamento]
+        except: 
             total = totalv['total']
             adiantamento = 0
+        try:
+           return [despesas, round(total,2), adiantamento]
+        except:
+            return [despesas, 0, 0] 
 
-        return [despesas, round(total,2), adiantamento]
+       

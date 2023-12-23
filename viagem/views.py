@@ -88,6 +88,8 @@ def usuarios(request):
 def relatorios(request):
     if request.method == 'POST':
         despesa = Despesas().relDespesas(request)
+        if len(despesa[0]) == 0:
+            messages.success(request, "Sem dados para exibir!!")
     else:
         despesa = ['','', '']
     context = {
@@ -99,3 +101,7 @@ def relatorios(request):
         'adiantamento': despesa[2]
     }
     return render(request, 'relatorio.html', context)
+
+def resumo(request):
+    
+    return render(request, 'resumo.html')

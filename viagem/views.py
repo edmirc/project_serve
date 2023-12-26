@@ -15,7 +15,7 @@ def dados(request):
         context = {}
     else:
         if request.method == 'POST':
-            res = Despesas().saveDespesa(request.POST)
+            res = Despesas().saveDespesa(request.POST, request.FILES)
             messages.success(request, res)
         kmfinal = Despesas().lastKm()
         context = {

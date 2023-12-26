@@ -1,5 +1,7 @@
 from collections.abc import Iterable
 from django.db import models
+from django.conf import settings
+import os
 
 
 class Carros(models.Model):
@@ -61,11 +63,15 @@ class Cidades(models.Model):
     
     def confirmCidade(self, nome) -> int:
         cid = Cidades.objects.filter(nome = nome)
-        id = cid[0].id
-        if id == '' or id is None:
+        try:
+            id = cid[0].id
+            print(id)
+            if id == '' or id is None:
+                return 0
+            else:
+                return id
+        except:
             return 0
-        else:
-            return id
         
     def getCidade(self):
         try:
@@ -250,8 +256,9 @@ class Despesas(models.Model):
     media = models.DecimalField(name='media', decimal_places=2, max_digits=10)
     cidade = models.ForeignKey(Cidades, name='idcidade', on_delete=models.CASCADE)
     pagamento = models.ForeignKey(Pagamentos, name='idpagamento', on_delete=models.CASCADE)
+    imagemnota = models.FileField(upload_to='notas', name='imagemnota', null=True)
 
-    def saveDespesa(self, post: dict):
+    def saveDespesa(self, post: dict, file:dict):
         bt = post['bt']
         id  = post['id']
         if str(bt) == '1':
@@ -268,10 +275,12 @@ class Despesas(models.Model):
             consumo = post['consumo']
             cidade = Cidades.objects.get(id=post['cidade'])
             pg = Pagamentos.objects.get(id=post['pg'])
+            image = file['imagem']
             try:
                 if id != '':
                     dados = Despesas.objects.get(id = id)
                     acao = 'Alterado'
+                    self.confereNota(image, dados.imagemnota)
                 else:
                     dados = Despesas()
                 dados.idnomeviagem = viagem
@@ -286,6 +295,7 @@ class Despesas(models.Model):
                 dados.media = consumo
                 dados.idcidade = cidade
                 dados.idpagamento = pg
+                dados.imagemnota = image
                 dados.save()
                 if int(kmf) > 0 and id == "": 
                     viagem.kmfinal = kmf
@@ -308,10 +318,13 @@ class Despesas(models.Model):
     def dropDespesa(self, id):
         try:
             desp = Despesas.objects.get(id=id)
+            image = desp.imagemnota
+            image = str(image).replace('/','\\')
+            os.remove(os.path.join(settings.MEDIA_ROOT, str(image)))
             desp.delete()
             return f'Despesa de ID = {id}, deletado com sucesso!!!'
         except:
-            return 'Despesa NÂO deletad!!'
+            return 'Despesa NÂO deletada!!'
     
     def lastKm(self):
         viagem = NomeViagem().getNomesAtivos()
@@ -361,4 +374,13 @@ class Despesas(models.Model):
         except:
             return [despesas, 0, 0] 
 
+    def confereNota(self, ima, imagem):
+        image = str(ima)
+        imagem1 = str(imagem).split('/')[1]
+        if image != imagem1:
+            imagem1 = imagem1.replace('/','\\')
+            try:
+                os.remove(os.path.join(settings.MEDIA_ROOT, str(imagem)))
+            except:
+                pass
        

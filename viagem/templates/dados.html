@@ -3,7 +3,7 @@
 {% load static %}
 <div class="container">
     <H1>Despesas da Viagem</H1>
-    <form action="{% url 'dados' %}" class="row g-3" method="post">
+    <form action="{% url 'dados' %}" class="row g-3" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-md-2">
             <label for="id" class="form-label">ID da Despesa</label>
@@ -73,6 +73,10 @@
                 {% endfor %}
             </select>
         </div>
+        <div class="col-md-6">
+            <label for="imagem" class="form-label">Uplod da nota da despesa</label>
+            <input type="file" name="imagem" id="imagem" required class="form-control">
+        </div>
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary" name="bt" value="1" >Salvar Despesa</button>
             <button type="submit" class="btn btn-outline-success" name="bt" value="3" >Limpar formulario</button>
@@ -87,6 +91,7 @@
                 <th scope="col">Despesa</th>
                 <th scope="col">Qnt</th>
                 <th scope="col">valor</th>
+                <th scope="col">Nota</th>
                 <th scope="col">km Rodado</th>
                 <th scope="col">Consumo</th>
                 <th scope="col">Cidade</th>
@@ -107,6 +112,7 @@
                 <td>{{ item.qnt }}</td>
                 {% endif %}
                 <td>{{ item.valor }}</td>
+                <td><a href="{{ item.imagemnota.url }}">{{ item.nota }}</a></td>
                 {% if item.idtipo.id != 5 %}
                 <td></td>
                 <td></td>

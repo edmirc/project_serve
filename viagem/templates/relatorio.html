@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-4">
             <label for="data" class="form-label">Selecione a data</label>
-            <input type="date" name="data" id="data" class="form-control" value="0">
+            <input type="date" name="data" id="data" class="form-control">
         </div>
         <h5>Tipos de Depesas</h5>
         {% for i in tipo %}
@@ -58,6 +58,7 @@
                 <th scope="col">Média</th>
                 <th scope="col">Cidade</th>
                 <th scope="col">Pagamento</th>
+                <th scope="col">Imagem</th>
             </tr>
             </thead>
             <tbody>
@@ -73,7 +74,7 @@
                         <th>{{ item.qnt }}</th>
                     {% endif %}
                     <th>{{ item.valor }}</th>
-                    <th>{{ item.nota }}</th>
+                    <th><a href="{{ item.imagemnota.url}}">{{ item.nota }}</a></th>
                     {% if item.idtipo.id == 5 %}
                         <th>{{ item.kmfinal }}</th>
                         <th>{{ item.kmrodado }}</th>
@@ -86,7 +87,9 @@
                         <th></th>
                     {% endif%}
                     <th>{{ item.idpagamento.forma }}</th>
+                    <th>{{ item.imagemnota }}</th>
                 </tr>
+        
                 {% endfor %}
                 <tr>
                     <th scope="row"></th>

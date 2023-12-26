@@ -275,7 +275,10 @@ class Despesas(models.Model):
             consumo = post['consumo']
             cidade = Cidades.objects.get(id=post['cidade'])
             pg = Pagamentos.objects.get(id=post['pg'])
-            image = file['imagem']
+            try:
+                image = file['imagem']
+            except:
+                image = ''
             try:
                 if id != '':
                     dados = Despesas.objects.get(id = id)
@@ -295,7 +298,7 @@ class Despesas(models.Model):
                 dados.media = consumo
                 dados.idcidade = cidade
                 dados.idpagamento = pg
-                dados.imagemnota = image
+                if image != "" : dados.imagemnota = image
                 dados.save()
                 if int(kmf) > 0 and id == "": 
                     viagem.kmfinal = kmf

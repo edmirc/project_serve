@@ -58,7 +58,6 @@
                 <th scope="col">Média</th>
                 <th scope="col">Cidade</th>
                 <th scope="col">Pagamento</th>
-                <th scope="col">Imagem</th>
             </tr>
             </thead>
             <tbody>
@@ -74,7 +73,11 @@
                         <th>{{ item.qnt }}</th>
                     {% endif %}
                     <th>{{ item.valor }}</th>
-                    <th><a href="{{ item.imagemnota.url}}">{{ item.nota }}</a></th>
+                    {% if item.imagemnota is Null or item.imagemnota == '' %}
+                        <td>{{ item.nota }}</td>
+                    {% else %}
+                        <td><a href="{{ item.imagemnota.url }}">{{ item.nota }}</a></td>
+                    {% endif %}
                     {% if item.idtipo.id == 5 %}
                         <th>{{ item.kmfinal }}</th>
                         <th>{{ item.kmrodado }}</th>
@@ -85,9 +88,8 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                    {% endif%}
+                    {% endif %}
                     <th>{{ item.idpagamento.forma }}</th>
-                    <th>{{ item.imagemnota }}</th>
                 </tr>
         
                 {% endfor %}

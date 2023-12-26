@@ -75,7 +75,7 @@
         </div>
         <div class="col-md-6">
             <label for="imagem" class="form-label">Uplod da nota da despesa</label>
-            <input type="file" name="imagem" id="imagem" required class="form-control">
+            <input type="file" name="imagem" id="imagem" class="form-control">
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-outline-primary" name="bt" value="1" >Salvar Despesa</button>
@@ -112,7 +112,11 @@
                 <td>{{ item.qnt }}</td>
                 {% endif %}
                 <td>{{ item.valor }}</td>
-                <td><a href="{{ item.imagemnota.url }}">{{ item.nota }}</a></td>
+                {% if item.imagemnota is Null or item.imagemnota == '' %}
+                    <td>{{ item.nota }}</td>
+                {% else %}
+                    <td><a href="{{ item.imagemnota.url }}">{{ item.nota }}</a></td>
+                {% endif %}
                 {% if item.idtipo.id != 5 %}
                 <td></td>
                 <td></td>

@@ -2,6 +2,7 @@ from collections.abc import Iterable
 from django.db import models
 from django.conf import settings
 import os
+from .image import trataImagem
 
 
 class Carros(models.Model):
@@ -256,7 +257,7 @@ class Despesas(models.Model):
     media = models.DecimalField(name='media', decimal_places=2, max_digits=10)
     cidade = models.ForeignKey(Cidades, name='idcidade', on_delete=models.CASCADE)
     pagamento = models.ForeignKey(Pagamentos, name='idpagamento', on_delete=models.CASCADE)
-    imagemnota = models.FileField(upload_to='notas', name='imagemnota', null=True)
+    imagemnota = models.FileField(upload_to='notas', name='imagemnota', null=True, default='nada')
 
     def saveDespesa(self, post: dict, file:dict):
         bt = post['bt']
@@ -298,8 +299,11 @@ class Despesas(models.Model):
                 dados.media = consumo
                 dados.idcidade = cidade
                 dados.idpagamento = pg
-                if image != "" : dados.imagemnota = image
+                if image != "" : 
+                    dados.imagemnota = image
                 dados.save()
+                if image != "" : 
+                    image = trataImagem(str(image))
                 if int(kmf) > 0 and id == "": 
                     viagem.kmfinal = kmf
                     viagem.save()
@@ -379,11 +383,38 @@ class Despesas(models.Model):
 
     def confereNota(self, ima, imagem):
         image = str(ima)
-        imagem1 = str(imagem).split('/')[1]
-        if image != imagem1:
+        try:
+            imagem1 = str(imagem).split('/')[1]
+        except:
+            imagem1 = 'nada'
+        if image != imagem1 and imagem1 != 'nada':
             imagem1 = imagem1.replace('/','\\')
             try:
                 os.remove(os.path.join(settings.MEDIA_ROOT, str(imagem)))
             except:
                 pass
-       
+    
+    def resumoDespes(self, viagem):
+        des = Despesas.objects.filter(idnomeviagem=viagem)
+        des_soma = des.values('idtipo__tipo').annotate(soma_qnt = models.Sum('qnt') ,
+                                                       soma_valor = models.Sum('valor'))
+        for a, i in enumerate(des_soma):
+            if float(i['soma_qnt']) != 0.00:
+                valor = float(i['soma_valor'])
+                qnt = float(i['soma_qnt'])
+                media = valor / qnt
+                des_soma[a]['media'] = round(media, 2)    
+        return  des_soma
+    
+    def resumoPagamento(self, viagem):
+        pag = Despesas.objects.filter(idnomeviagem=viagem)
+        lista = list()
+        for i in Tipos().getTipos():
+            despesa = dict()
+            pag_des = pag.filter(idtipo__tipo=i.tipo)
+            pag_des = pag_des.values('idpagamento__forma').annotate(soma=models.Sum('valor'))
+            despesa[i.tipo] = pag_des
+            lista.append(despesa)
+        print(lista)
+        return lista
+    

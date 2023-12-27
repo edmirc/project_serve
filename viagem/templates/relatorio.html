@@ -73,10 +73,10 @@
                         <th>{{ item.qnt }}</th>
                     {% endif %}
                     <th>{{ item.valor }}</th>
-                    {% if item.imagemnota is Null or item.imagemnota == '' %}
+                    {% if item.imagemnota == 'nada' %}
                         <td>{{ item.nota }}</td>
                     {% else %}
-                        <td><a href="{{ item.imagemnota.url }}">{{ item.nota }}</a></td>
+                        <td><a href="{{item.imagemnota.url}}" target="_blank">{{ item.nota }}</a></td>
                     {% endif %}
                     {% if item.idtipo.id == 5 %}
                         <th>{{ item.kmfinal }}</th>

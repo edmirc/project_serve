@@ -103,5 +103,10 @@ def relatorios(request):
     return render(request, 'relatorio.html', context)
 
 def resumo(request):
-    
-    return render(request, 'resumo.html')
+    context = dict()
+    if request.method == 'POST':
+        context['soma'] = Despesas().resumoDespes(request.POST.get('viagem'))
+        context['pg'] = Despesas().resumoPagamento(request.POST.get('viagem'))
+    context['viagem']= NomeViagem().getNomeViagem()
+    context['forma'] = Pagamentos().getPagamentos()
+    return render(request, 'resumo.html', context)

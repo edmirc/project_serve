@@ -280,36 +280,36 @@ class Despesas(models.Model):
                 image = file['imagem']
             except:
                 image = ''
-            #try:
-            if id != '':
-                dados = Despesas.objects.get(id = id)
-                acao = 'Alterado'
-                self.confereNota(image, dados.imagemnota)
-            else:
-                dados = Despesas()
-            dados.idnomeviagem = viagem
-            dados.data = data
-            dados.idtipo = tipo
-            dados.qnt = qnt
-            dados.valor = valor
-            dados.nota = nota
-            dados.kminicial = kmi
-            dados.kmfinal = kmf
-            dados.kmrodado = kmr
-            dados.media = consumo
-            dados.idcidade = cidade
-            dados.idpagamento = pg
-            if image != "" : 
-                dados.imagemnota = image
-            dados.save()
-            if image != "" : 
-                image = trataImagem(str(image))
-            if int(kmf) > 0 and id == "": 
-                viagem.kmfinal = kmf
-                #viagem.save()
-            return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
-            #except:
-                #return 'Dados NÂO salvos!!!'
+            try:
+                if id != '':
+                    dados = Despesas.objects.get(id = id)
+                    acao = 'Alterado'
+                    self.confereNota(image, dados.imagemnota)
+                else:
+                    dados = Despesas()
+                dados.idnomeviagem = viagem
+                dados.data = data
+                dados.idtipo = tipo
+                dados.qnt = qnt
+                dados.valor = valor
+                dados.nota = nota
+                dados.kminicial = kmi
+                dados.kmfinal = kmf
+                dados.kmrodado = kmr
+                dados.media = consumo
+                dados.idcidade = cidade
+                dados.idpagamento = pg
+                if image != "" : 
+                    dados.imagemnota = image
+                dados.save()
+                if image != "" : 
+                    image = trataImagem(str(image))
+                if int(kmf) > 0 and id == "": 
+                    viagem.kmfinal = kmf
+                viagem.save()
+                return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
+            except:
+                return 'Dados NÂO salvos!!!'
         elif str(bt) == '3':
             return 'Formulario limpo!!'
         else:
@@ -415,6 +415,5 @@ class Despesas(models.Model):
             pag_des = pag_des.values('idpagamento__forma').annotate(soma=models.Sum('valor'))
             despesa[i.tipo] = pag_des
             lista.append(despesa)
-        print(lista)
         return lista
     

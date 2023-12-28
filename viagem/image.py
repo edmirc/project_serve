@@ -5,7 +5,7 @@ from os import path
 def trataImagem(image):
     imagelist = image.split('.')[1]
     if imagelist in ('jpg', 'png', 'jpeg'):
-        caminho = path.join(settings.MEDIA_ROOT, f'notas\\{image}')
+        caminho = path.join(settings.MEDIA_ROOT, f'notas/{image}')
         imag = Image.open(caminho)
         left, right = imag.size
         left_n = int(left * 0.5)
